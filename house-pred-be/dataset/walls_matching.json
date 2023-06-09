@@ -1,0 +1,8 @@
+[
+  { "wall_id": 1, "wall_name": "NA" },
+  { "wall_id": 2, "wall_name": "blochni" },
+  { "wall_id": 3, "wall_name": "monolitno-karkasnyy" },
+  { "wall_id": 4, "wall_name": "panel'ni" },
+  { "wall_id": 5, "wall_name": "tsehlyanyy budynok" },
+  { "wall_id": 6, "wall_name": "uteplena panel'" }
+]

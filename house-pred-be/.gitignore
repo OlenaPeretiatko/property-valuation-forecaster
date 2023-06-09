@@ -1,0 +1,34 @@
+# Python files
+*.pyc
+__pycache__/
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+
+# Environment and package files
+env/
+*.env
+*.venv
+env/
+venv/
+.vscode/
+
+# Data files
+data/
+*.csv
+*.xlsx
+
+# Model files
+models/
+
+# Log files
+logs/
+
+# IDE specific files
+.idea/
+*.iml
+.vs/
+
+# Miscellaneous
+.DS_Store
+*.log
