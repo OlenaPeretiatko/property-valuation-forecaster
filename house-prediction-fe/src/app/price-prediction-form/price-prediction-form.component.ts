@@ -27,15 +27,6 @@ export class PricePredictionFormComponent implements OnInit {
   constructor(private dataService: DataService) {}
 
   ngOnInit() {
-    const postData = {
-      admin_district: 1,
-      hist_district: 51,
-      street: 14,
-      wall: 1,
-      area_total: 50,
-      rooms: 1,
-    };
-
     this.dataService.getAdminDistricts().subscribe((data) => {
       this.adminDistricts = data;
     });

@@ -4,13 +4,11 @@ from flask_cors import CORS, cross_origin
 import joblib
 import numpy as np
 
-# Create a Flask app
 app = Flask(__name__)
 CORS(app)
 
 
 def extract_features(request_data):
-    print(request_data)
     admin_district = request_data["admin_district"]
     hist_district = request_data["hist_district"]
     street = request_data["street"]
@@ -30,14 +28,9 @@ def predict():
     )
 
     data = request.get_json()
-
     features = extract_features(data)
-
-    features = np.array(features).reshape(1, -1)
-
-    prediction = model.predict(features)
-
-    print(prediction)
+    reshaped_features = np.array(features).reshape(1, -1)
+    prediction = model.predict(reshaped_features)
 
     response = {"prediction": int(prediction[0])}
     return jsonify(response)
