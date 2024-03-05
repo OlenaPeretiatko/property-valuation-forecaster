@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "house-prediction-fe:build:production"
+              "buildTarget": "house-prediction-fe:build:production"
             },
             "development": {
-              "browserTarget": "house-prediction-fe:build:development"
+              "buildTarget": "house-prediction-fe:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "house-prediction-fe:build"
+            "buildTarget": "house-prediction-fe:build"
           }
         },
         "test": {
