@@ -18,84 +18,127 @@
   </mat-select>
 </mat-form-field>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 gap-6">
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Line Chart </mat-card-title>
+      <mat-card-title>
+        Explore Trends with Our Monthly Sales Price Chart
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <canvas
-        baseChart
-        width="600"
-        height="400"
-        [type]="'line'"
-        [data]="lineChartData"
-        [options]="{
-          responsive: false
-        }"
-        [legend]="true"
-      >
-      </canvas>
+      <div class="flex items-center gap-6">
+        <canvas
+          baseChart
+          width="600"
+          height="400"
+          [type]="'line'"
+          [data]="lineChartData"
+          [options]="{
+            responsive: false
+          }"
+          [legend]="true"
+        >
+        </canvas>
+        <div>
+          Discover the evolving landscape of property prices over the year with
+          our interactive line chart detailing average sold prices each month.
+          This visualization helps you spot trends and make timely decisions in
+          the Ukrainian real estate market. Whether you're planning to buy or
+          sell, understanding these patterns ensures you're well-informed and
+          ahead of market shifts. Stay updated with the latest price movements
+          to maximize your real estate investment or find the best time to enter
+          the market.
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Bar Chart </mat-card-title>
+      <mat-card-title>
+        Explore Neighborhood Value with Our Bar Chart
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <canvas
-        baseChart
-        width="600"
-        height="400"
-        [type]="'bar'"
-        [data]="barChartData"
-        [options]="{
+      <div class="flex items-center gap-6">
+        <canvas
+          baseChart
+          width="600"
+          height="400"
+          [type]="'bar'"
+          [data]="barChartData"
+          [options]="{
           responsive: false,
         }"
-        [legend]="true"
-      >
-      </canvas>
+          [legend]="true"
+        >
+        </canvas>
+        <div>
+          Our detailed bar chart offers a visual comparison of average property
+          prices across different neighborhoods. This tool is perfect for
+          identifying which areas of Ukraine offer the best value for your
+          budget, helping you to narrow down your search for the ideal property.
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Doughnut Chart </mat-card-title>
+      <mat-card-title>
+        Doughnut Chart: Property Price Distribution
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <canvas
-        baseChart
-        width="600"
-        height="400"
-        [labels]="doughnutChartLabels"
-        [datasets]="doughnutChartDatasets"
-        [options]="{
+      <div class="flex items-center gap-6">
+        <canvas
+          baseChart
+          width="600"
+          height="400"
+          [labels]="doughnutChartLabels"
+          [datasets]="doughnutChartDatasets"
+          [options]="{
           responsive: false,
         }"
-        [legend]="true"
-        [type]="'doughnut'"
-      >
-      </canvas>
+          [legend]="true"
+          [type]="'doughnut'"
+        >
+        </canvas>
+        <div>
+          Gain insights into the distribution of property prices with our
+          colorful doughnut chart. This visual breaks down price ranges, showing
+          you at a glance where most properties fall within your budget.
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Radar Chart </mat-card-title>
+      <mat-card-title>
+        Radar Chart: Understanding Feature Impact
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <canvas
-        baseChart
-        width="600"
-        height="400"
-        [labels]="radarChartLabels"
-        [datasets]="radarChartData"
-        [options]="radarChartOptions"
-        [legend]="true"
-        [type]="'radar'"
-      >
-      </canvas>
+      <div class="flex items-center gap-6">
+        <canvas
+          baseChart
+          width="600"
+          height="400"
+          [labels]="radarChartLabels"
+          [datasets]="radarChartData"
+          [options]="radarChartOptions"
+          [legend]="true"
+          [type]="'radar'"
+        >
+        </canvas>
+        <div>
+          See how different property features influence pricing with our
+          intuitive radar chart. This visual representation highlights the
+          importance of features such as location, size, and amenities, allowing
+          you to understand what drives property values in Ukraine.
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>
