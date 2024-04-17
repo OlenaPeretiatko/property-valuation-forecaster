@@ -1,0 +1,45 @@
+<mat-card>
+  <mat-card-header class="mb-5">
+    <mat-card-title>Predict Your Property Price</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field class="w-full">
+        <mat-label>Property Address</mat-label>
+        <input matInput placeholder="123 Main St, City, State" />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Type of Property</mat-label>
+        <mat-select>
+          <mat-option value="apartment">Apartment</mat-option>
+          <mat-option value="house">House</mat-option>
+          <mat-option value="townhouse">Townhouse</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field>
+          <mat-label>Bedrooms</mat-label>
+          <input matInput type="number" min="0" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Bathrooms</mat-label>
+          <input matInput type="number" min="0" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Square Footage</mat-label>
+          <input matInput type="number" min="0" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Year Built</mat-label>
+          <input matInput type="number" min="0" />
+        </mat-form-field>
+      </div>
+
+      <button mat-raised-button color="primary" class="w-full mt-4">
+        Predict Price
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,13 @@
+.bg-home-img {
+  height: 650px;
+  background-image: url("../../../assets/house-exterior.png");
+  background-size: 100%;
+  background-size: cover;
+}
+
+.text-highlight::after {
+  float: left;
+  content: "Predicting House Price in Ukraine";
+  color: transparent;
+  text-shadow: 0px -100px 50px rgba(0, 0, 0, 1);
+}

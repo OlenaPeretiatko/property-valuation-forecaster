@@ -1,7 +1,7 @@
-import { StreetMatching, WallMatching } from './../models/models';
+import { StreetMatching, WallMatching } from '../../models/models';
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../data-service.service';
-import { HistDistrictMatching, AdminDistrictMatching } from '../models/models';
+import { DataService } from '../../data-service.service';
+import { HistDistrictMatching, AdminDistrictMatching } from '../../models/models';
 
 @Component({
   selector: 'app-price-prediction-form',

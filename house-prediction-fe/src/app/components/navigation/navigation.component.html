@@ -1,19 +1,23 @@
-<div class="sticky z-10 top-0">
+<div class="sticky z-[999] top-0">
   <mat-toolbar class="bg-slate-300 shadow-md">
     <img src="assets/logo.png" alt="logo" class="h-full" />
     <!-- Replace with your logo -->
 
     <span class="flex-grow"></span>
-    <div class="space-x-4">
-      <a mat-button routerLink="/home" routerLinkActive="font-semibold">Home</a>
-      <a mat-button routerLink="/about" routerLinkActive="font-semibold">
+    <div class="space-x-4 text-sm">
+      <a mat-button [routerLink]="'/home'" routerLinkActive="font-semibold">
+        Home</a
+      >
+      <a mat-button [routerLink]="'/about'" routerLinkActive="font-semibold">
         About Us
       </a>
-      <a mat-button routerLink="/features" routerLinkActive="font-semibold">
+      <a mat-button [routerLink]="'/features'" routerLinkActive="font-semibold">
         Features
       </a>
-      <a mat-button routerLink="/blog" routerLinkActive="font-semibold">Blog</a>
-      <a mat-button routerLink="/contact" routerLinkActive="font-semibold">
+      <a mat-button [routerLink]="'/blog'" routerLinkActive="font-semibold">
+        Blog</a
+      >
+      <a mat-button [routerLink]="'/contact'" routerLinkActive="font-semibold">
         Contact
       </a>
     </div>

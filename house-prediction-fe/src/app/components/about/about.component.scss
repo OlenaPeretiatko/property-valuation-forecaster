@@ -1,0 +1,17 @@
+.bg-home-img {
+  height: 650px;
+  background-image: url("../../../assets/house-interior.png");
+  background-size: cover;
+  background-position: center; 
+}
+
+.text-highlight::before {
+  float: left;
+  content: "About Us";
+  color: white;
+  text-shadow: 0px 0px 50px black;
+}
+
+p {
+  margin: 1rem 0;
+}
