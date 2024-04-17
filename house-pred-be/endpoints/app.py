@@ -9,14 +9,20 @@ CORS(app)
 
 
 def extract_features(request_data):
-    admin_district = request_data["admin_district"]
-    hist_district = request_data["hist_district"]
-    street = request_data["street"]
-    wall = request_data["wall"]
-    area_total = request_data["area_total"]
-    rooms = request_data["rooms"]
+    city_code = request_data["city_code"]
+    district_code = request_data["district_code"]
+    furnishing_code = request_data["furnishing_code"]
+    floor = request_data["floor"]
+    total_area = request_data["total_area"]
+    kitchen_area = request_data["kitchen_area"]
+    rooms_number = request_data["rooms_number"]
+    amenities_score = request_data["amenities_score"]
+    education_score = request_data["education_score"]
+    transportation_score = request_data["rooms_number"]
 
-    return [admin_district, hist_district, street, wall, area_total, rooms]
+    return [city_code, district_code, furnishing_code, floor, total_area, kitchen_area, rooms_number,
+            amenities_score, education_score, transportation_score
+            ]
 
 
 @app.route("/predict", methods=["POST"])
@@ -49,17 +55,17 @@ def load_json_file(file_path):
         return jsonify({"error": f"Error decoding JSON file: {err}"}), 500
 
 
-@app.route("/hist_districts", methods=["GET"])
-@app.route("/admin_districts", methods=["GET"])
-@app.route("/streets", methods=["GET"])
-@app.route("/walls", methods=["GET"])
+@app.route("/cities", methods=["GET"])
+@app.route("/districts", methods=["GET"])
+@app.route("/furnishing", methods=["GET"])
+@app.route("/property_type", methods=["GET"])
 @cross_origin()
 def get_data():
     route_mapping = {
-        "/hist_districts": "../dataset/hist_districts_matching.json",
-        "/admin_districts": "../dataset/admin_districts_matching.json",
-        "/streets": "../dataset/streets_matching.json",
-        "/walls": "../dataset/walls_matching.json",
+        "/cities": "../dataset/cities_matching.json",
+        "/districts": "../dataset/districts_matching.json",
+        "/furnishing": "../dataset/furnishing_matching.json",
+        "/property_type": "../dataset/property_type_matching.json",
     }
     path = route_mapping.get(request.path)
     if path is None:
