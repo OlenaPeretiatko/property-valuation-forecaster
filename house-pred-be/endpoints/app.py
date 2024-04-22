@@ -18,7 +18,7 @@ def extract_features(request_data):
     rooms_number = request_data["rooms_number"]
     amenities_score = request_data["amenities_score"]
     education_score = request_data["education_score"]
-    transportation_score = request_data["rooms_number"]
+    transportation_score = request_data["transportation_score"]
 
     return [city_code, district_code, furnishing_code, floor, total_area, kitchen_area, rooms_number,
             amenities_score, education_score, transportation_score
@@ -44,13 +44,11 @@ def predict():
 
 def load_json_file(file_path):
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
         return jsonify(data)
-
     except FileNotFoundError:
         return jsonify({"error": f"File '{file_path}' not found."}), 404
-
     except json.JSONDecodeError as err:
         return jsonify({"error": f"Error decoding JSON file: {err}"}), 500
 
@@ -59,6 +57,7 @@ def load_json_file(file_path):
 @app.route("/districts", methods=["GET"])
 @app.route("/furnishing", methods=["GET"])
 @app.route("/property_type", methods=["GET"])
+
 @cross_origin()
 def get_data():
     route_mapping = {

@@ -1,8 +1,8 @@
 [
-  {"id": 1, "name": "Франківський"},
-  {"id": 2, "name": "Залізничний"},
-  {"id": 3, "name": "Сихівський"},
-  {"id": 4, "name": "Шевченківський"},
-  {"id": 5, "name": "Галицький"},
-  {"id": 6, "name": "Личаківський"}
+  { "id": 1, "name": "Франківський", "nameEn": "Frankivskyi" },
+  { "id": 2, "name": "Залізничний", "nameEn": "Zaliznychnyi" },
+  { "id": 3, "name": "Сихівський", "nameEn": "Sykhivskyi" },
+  { "id": 4, "name": "Шевченківський", "nameEn": "Shevchenkivskyi" },
+  { "id": 5, "name": "Галицький", "nameEn": "Halytskyi" },
+  { "id": 6, "name": "Личаківський", "nameEn": "Lychakivskyi" }
 ]
