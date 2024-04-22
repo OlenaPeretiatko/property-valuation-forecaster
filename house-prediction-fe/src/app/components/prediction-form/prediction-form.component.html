@@ -1,45 +1,87 @@
-<mat-card>
-  <mat-card-header class="mb-5">
-    <mat-card-title>Predict Your Property Price</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <form>
-      <mat-form-field class="w-full">
-        <mat-label>Property Address</mat-label>
-        <input matInput placeholder="123 Main St, City, State" />
-      </mat-form-field>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+  <mat-card>
+    <mat-card-header class="mb-5">
+      <mat-card-title>Predict Your Property Price</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="pricePredictionForm">
+        <mat-form-field  class="w-full">
+          <mat-label>Address</mat-label>
+          <input type="text" matInput [matAutocomplete]="auto" formControlName="address">
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAddressSelected($event)">
+            <mat-option *ngFor="let address of addresses" [value]="address">
+              {{ address.display_name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-      <mat-form-field class="w-full">
-        <mat-label>Type of Property</mat-label>
-        <mat-select>
-          <mat-option value="apartment">Apartment</mat-option>
-          <mat-option value="house">House</mat-option>
-          <mat-option value="townhouse">Townhouse</mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>City</mat-label>
+          <mat-select formControlName="city_code">
+            <mat-option *ngFor="let el of cities" [value]="el.id">
+              {{ el.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <div class="grid grid-cols-2 gap-4">
-        <mat-form-field>
-          <mat-label>Bedrooms</mat-label>
-          <input matInput type="number" min="0" />
+        <mat-form-field class="w-full">
+          <mat-label>District</mat-label>
+          <mat-select formControlName="district_code">
+            <mat-option *ngFor="let el of districts" [value]="el.id">
+              {{ el.name }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>Bathrooms</mat-label>
-          <input matInput type="number" min="0" />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Square Footage</mat-label>
-          <input matInput type="number" min="0" />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Year Built</mat-label>
-          <input matInput type="number" min="0" />
-        </mat-form-field>
-      </div>
 
-      <button mat-raised-button color="primary" class="w-full mt-4">
-        Predict Price
-      </button>
-    </form>
-  </mat-card-content>
-</mat-card>
+        <div class="grid grid-cols-2 gap-4">
+          <mat-form-field>
+            <mat-label>Furnishing</mat-label>
+            <mat-select formControlName="furnishing_code">
+              <mat-option *ngFor="let el of furnishing" [value]="el.id">
+                {{ el.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Floor</mat-label>
+            <input matInput type="number" min="0" formControlName="floor" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Total area</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="total_area"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Kitchen area</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="kitchen_area"
+            />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Rooms number</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="rooms_number"
+            />
+          </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" class="w-full mt-4">
+          Predict Price
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <div id="map" class="min-h-[400px]"></div>
+</div>

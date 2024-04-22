@@ -108,7 +108,7 @@ export class ChartsComponent implements OnInit {
       .getCities()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((cities) => {
-        this.cities = cities;
+        this.cities = cities.map((el) => ({ id: el.id, city: el.name }));
       });
 
     this.loadLineChartData();
