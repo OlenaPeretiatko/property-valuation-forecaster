@@ -15,6 +15,24 @@ import { DataService } from 'src/app/data-service.service';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, switchMap } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+
+interface CategoryDetails {
+  categoryName: string;
+  icon: string;
+  count: number;
+  placesNearby: string[];
+}
+
+interface Score {
+  schools: CategoryDetails;
+  hospitals: CategoryDetails;
+  kindergartens: CategoryDetails;
+  shopping_centers: CategoryDetails;
+  cafes: CategoryDetails;
+  park_areas: CategoryDetails;
+  transport_interchanges: CategoryDetails;
+}
 
 @Component({
   selector: 'prediction-form',
@@ -28,6 +46,7 @@ import { debounceTime, switchMap } from 'rxjs';
     MatSelectModule,
     MatCardModule,
     MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './prediction-form.component.html',
   styleUrl: './prediction-form.component.scss',
@@ -41,15 +60,6 @@ export class PredictionFormComponent implements OnInit {
   furnishing: { id: number; name: string }[] = [];
   propertyTypes: { id: number; name: string }[] = [];
   prediction?: number;
-
-  housePricePredData = {
-    admin_district: null,
-    hist_district: null,
-    street: null,
-    wall: null,
-    area_total: null,
-    rooms: null,
-  };
 
   addresses: any[] = [];
 
@@ -66,6 +76,52 @@ export class PredictionFormComponent implements OnInit {
     education_score: new FormControl<number | null>(null),
     transportation_score: new FormControl<number | null>(null),
   });
+
+  score: Score = {
+    schools: {
+      categoryName: 'Schools',
+      icon: 'school', // Material icon for school
+      count: 0,
+      placesNearby: [],
+    },
+    hospitals: {
+      categoryName: 'Hospitals',
+      icon: 'local_hospital', // Material icon for hospitals
+      count: 0,
+      placesNearby: [],
+    },
+    kindergartens: {
+      categoryName: 'Kindergartens',
+      icon: 'child_care', // Material icon for childcare
+      count: 0,
+      placesNearby: [],
+    },
+    shopping_centers: {
+      categoryName: 'Grocery, Shopping Centers',
+      icon: 'shopping_cart', // Material icon for shopping
+      count: 0,
+      placesNearby: [],
+    },
+    cafes: {
+      categoryName: 'Cafes, Restaurants',
+      icon: 'shopping_cart', // Material icon for shopping
+      count: 0,
+      placesNearby: [],
+    },
+    park_areas: {
+      categoryName: 'Park Areas',
+      icon: 'nature_people', // Material icon for parks
+      count: 0,
+      placesNearby: [],
+    },
+    transport_interchanges: {
+      categoryName: 'Transport Interchanges',
+      icon: 'directions_bus', // Material icon for bus stations
+      count: 0,
+      placesNearby: [],
+    },
+  };
+
   constructor(private dataService: DataService, private http: HttpClient) {}
 
   ngOnInit() {
@@ -131,6 +187,8 @@ export class PredictionFormComponent implements OnInit {
     this.findNearby(lat, lon, 'amenity');
     this.findNearby(lat, lon, 'education');
     this.findNearby(lat, lon, 'transportation');
+
+    this.getNearbyForDisplay(lat, lon);
   }
 
   private searchAddress(query: string) {
@@ -175,6 +233,7 @@ export class PredictionFormComponent implements OnInit {
           out;
         `;
         break;
+      // Add more cases as needed
     }
 
     this.http
@@ -196,6 +255,101 @@ export class PredictionFormComponent implements OnInit {
           console.error('Error fetching data:', error);
         }
       );
+  }
+
+  getNearbyForDisplay(lat: string, lon: string) {
+    const query = `
+    [out:json];
+    (
+      node(around:700, ${lat}, ${lon})["amenity"="school"];
+      node(around:700, ${lat}, ${lon})["amenity"="hospital"];
+      node(around:700, ${lat}, ${lon})["amenity"="kindergarten"];
+      node(around:700, ${lat}, ${lon})["shop"~"mall|convenience|supermarket|greengrocer|deli"];
+      node(around:700, ${lat}, ${lon})["leisure"~"park|playground|recreation_ground|dog_park"];
+      node(around:700, ${lat}, ${lon})["public_transport"="platform"];
+      node(around:700, ${lat}, ${lon})["amenity"~"restaurant|cafe"];
+    );
+    out;
+  `;
+
+    this.http
+      .get(
+        `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(
+          query
+        )}`
+      )
+      .subscribe(
+        (response: any) => {
+          console.log(response);
+          const elements = response.elements;
+
+          this.processPOIs(elements, 'schools', 'amenity', 'school');
+          this.processPOIs(elements, 'hospitals', 'amenity', 'hospital');
+          this.processPOIs(
+            elements,
+            'kindergartens',
+            'amenity',
+            'kindergarten'
+          );
+          this.processPOIs(
+            elements,
+            'shopping_centers',
+            'shop',
+            'mall',
+            'convenience',
+            'supermarket',
+            'greengrocer',
+            'deli'
+          );
+          this.processPOIs(elements, 'cafes', 'amenity', 'restaurant', 'cafe');
+          this.processPOIs(
+            elements,
+            'park_areas',
+            'leisure',
+            'park',
+            'playground',
+            'recreation_ground',
+            'dog_park'
+          );
+          this.processPOIs(
+            elements,
+            'transport_interchanges',
+            'public_transport',
+            'platform'
+          );
+
+          console.log('Score object updated with nearby POIs:', this.score);
+          // You can now display both the count and the names in your UI
+        },
+        (error) => {
+          console.error('Error fetching data:', error);
+        }
+      );
+  }
+
+  processPOIs(
+    elements: any[],
+    property: string,
+    tagKey: string,
+    ...tagValues: string[]
+  ) {
+    const filteredElements = elements.filter((el: any) =>
+      tagValues.includes(el.tags[tagKey])
+    );
+    const uniqueFilteredElements = Array.from(new Set(filteredElements));
+
+    (this.score as any)[property] = {
+      ...(this.score as any)[property],
+
+      count: Array.from(
+        new Set(filteredElements.map((el) => el.tags.name || null))
+      ).filter((name) => name != null).length,
+      placesNearby: Array.from(
+        new Set(filteredElements.map((el) => el.tags.name || null))
+      )
+        .filter((name) => name != null)
+        .splice(0, 6),
+    };
   }
 
   geocode(lat: string, lon: string) {
@@ -241,8 +395,9 @@ export class PredictionFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.dataService
-      .postPricePrediction(this.housePricePredData)
-      .subscribe((response) => (this.prediction = response.prediction));
+    const data = '';
+    // this.dataService
+    //   .postPricePrediction(data)
+    //   .subscribe((response) => (this.prediction = response.prediction));
   }
 }

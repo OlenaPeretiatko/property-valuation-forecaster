@@ -19,7 +19,6 @@ export class LoaderService {
   }
 
   hide(url: string) {
-    console.log('hide');
     this.activeRequests--;
 
     if (this.activeRequests === 0) {
