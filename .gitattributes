@@ -1,0 +1,1 @@
+house-pred-be/model/lviv_price_pred_model.jlb filter=lfs diff=lfs merge=lfs -text
