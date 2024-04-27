@@ -32,7 +32,8 @@
           width="600"
           height="400"
           [type]="'line'"
-          [data]="lineChartData"
+          [labels]="lineChartLabels"
+          [datasets]="lineChartDatasets"
           [options]="{
             responsive: false
           }"
@@ -66,7 +67,8 @@
           width="600"
           height="400"
           [type]="'bar'"
-          [data]="barChartData"
+          [labels]="barChartLabels"
+          [datasets]="barChartDatasets"
           [options]="{
           responsive: false,
         }"
@@ -126,8 +128,8 @@
           width="600"
           height="400"
           [labels]="radarChartLabels"
-          [datasets]="radarChartData"
-          [options]="radarChartOptions"
+          [datasets]="radarChartDatasets"
+          [options]="{ responsive: false }"
           [legend]="true"
           [type]="'radar'"
         >

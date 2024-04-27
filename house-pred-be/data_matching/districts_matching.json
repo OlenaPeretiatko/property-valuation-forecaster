@@ -1,0 +1,28 @@
+[
+  {
+    "city": "1",
+    "districts": [
+      { "id": 1, "name": "Франківський", "nameEn": "Frankivskyi" },
+      { "id": 2, "name": "Залізничний", "nameEn": "Zaliznychnyi" },
+      { "id": 3, "name": "Сихівський", "nameEn": "Sykhivskyi" },
+      { "id": 4, "name": "Шевченківський", "nameEn": "Shevchenkivskyi" },
+      { "id": 5, "name": "Галицький", "nameEn": "Halytskyi" },
+      { "id": 6, "name": "Личаківський", "nameEn": "Lychakivskyi" }
+    ]
+  },
+  {
+    "city": "2",
+    "districts": [
+      { "id": 1, "name": "Подільський", "nameEn": "Podilskyi" },
+      { "id": 2, "name": "Печерський", "nameEn": "Pecherskyi" },
+      { "id": 3, "name": "Солом'янський", "nameEn": "Solomianskyi" },
+      { "id": 4, "name": "Деснянський", "nameEn": "Desnianskyi" },
+      { "id": 5, "name": "Дарницький", "nameEn": "Darnytskyi" },
+      { "id": 6, "name": "Шевченківський", "nameEn": "Shevchenkivskyi" },
+      { "id": 7, "name": "Голосіївський", "nameEn": "Holosiivskyi" },
+      { "id": 8, "name": "Святошинський", "nameEn": "Sviatoshynskyi" },
+      { "id": 9, "name": "Оболонський", "nameEn": "Obolonskyi" },
+      { "id": 10, "name": "Дніпровський", "nameEn": "Dniprovskyi" }
+    ]
+  }
+]

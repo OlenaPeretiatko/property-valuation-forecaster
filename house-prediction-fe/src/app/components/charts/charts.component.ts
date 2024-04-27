@@ -33,61 +33,40 @@ export class ChartsComponent implements OnInit {
   selectedCity?: { id: number; city: string };
   cities?: { id: number; city: string }[];
 
-  //line
-  lineChartData: ChartConfiguration<'line'>['data'] = {
-    labels: [],
-    datasets: [
-      {
-        data: [], // Example data for average sold price
-        label: 'Average Sold Price $',
-        fill: true,
-        tension: 0.5,
-        borderColor: '#000',
-        backgroundColor: 'rgba(108, 208, 245, 0.5)', // Light blue background color
-      },
-    ],
-  };
-
-  barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        label: 'Average Price',
-        backgroundColor: ['#D3D3D3', '#1E90FF'],
-      },
-    ],
-  };
-
-  //doughnut
-  doughnutChartLabels: string[] = [
-    '< $200k',
-    '$200k - $300k',
-    '$300k - $400k',
-    '$400k - $500k',
-    '> $500k',
+  lineChartLabels: string[] = [];
+  lineChartDatasets: ChartConfiguration<'line'>['data']['datasets'] = [
+    {
+      data: [], // Example data for average sold price
+      label: 'Average Sold Price $',
+      fill: true,
+      tension: 0.5,
+      borderColor: '#000',
+      backgroundColor: 'rgba(108, 208, 245, 0.5)', // Light blue background color
+    },
   ];
+
+  barChartLabels: string[] = [];
+  barChartDatasets: ChartConfiguration<'bar'>['data']['datasets'] = [
+    {
+      data: [],
+      label: 'Average Price',
+      backgroundColor: ['#D3D3D3', '#1E90FF'],
+    },
+  ];
+
+  doughnutChartLabels: string[] = [];
   doughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
     {
-      data: [20, 30, 25, 15, 10], // Example distribution percentages
+      data: [],
       backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6610f2'], // Different colors for each segment
     },
   ];
 
-  //radar
-
-  radarChartLabels = [
-    'Location',
-    'Size',
-    'Age',
-    'Amenities',
-    'Schools',
-    'Transport',
-  ];
-  radarChartData: ChartConfiguration<'radar'>['data']['datasets'] = [
+  radarChartLabels: string[] = [];
+  radarChartDatasets: ChartConfiguration<'radar'>['data']['datasets'] = [
     {
       label: 'Feature Importance',
-      data: [80, 70, 60, 85, 75, 65],
+      data: [],
       backgroundColor: 'rgba(0, 123, 255, 0.2)',
       borderColor: '#007bff',
       pointBackgroundColor: '#007bff',
@@ -96,23 +75,24 @@ export class ChartsComponent implements OnInit {
       pointHoverBorderColor: '#007bff',
     },
   ];
-  radarChartOptions: ChartConfiguration<'radar'>['options'] = {
-    responsive: false,
-  };
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   constructor(private _dataService: DataService) {}
 
   ngOnInit(): void {
-    this._dataService
-      .getCities()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((cities) => {
-        this.cities = cities.map((el) => ({ id: el.id, city: el.name }));
-      });
+    setTimeout(() => {
+      this._dataService
+        .getCities()
+        .pipe(takeUntil(this._unsubscribeAll))
+        .subscribe((cities) => {
+          this.cities = cities.map((el) => ({ id: el.id, city: el.name }));
+        });
+    }, 0);
 
     this.loadLineChartData();
     this.loadBarChartData();
+    this.loadDoughnutChartData();
+    this.loadRadarChartDataChartData();
   }
 
   private loadLineChartData() {
@@ -120,8 +100,8 @@ export class ChartsComponent implements OnInit {
       .getSoldPrice()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
-        this.lineChartData.labels = data.map((el) => el.label);
-        this.lineChartData.datasets[0].data = data.map((el) => el.price);
+        this.lineChartLabels = data.map((el) => el.label);
+        this.lineChartDatasets[0].data = data.map((el) => el.price);
       });
   }
 
@@ -130,8 +110,28 @@ export class ChartsComponent implements OnInit {
       .getNeighborhoodPrice()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
-        this.barChartData.labels = data.map((el) => el.label);
-        this.barChartData.datasets[0].data = data.map((el) => el.price);
+        this.barChartLabels = data.map((el) => el.label);
+        this.barChartDatasets[0].data = data.map((el) => el.price);
+      });
+  }
+
+  private loadDoughnutChartData() {
+    this._dataService
+      .getHouseCountByPriceRange()
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((data) => {
+        this.doughnutChartLabels = data.map((el) => el.label);
+        this.doughnutChartDatasets[0].data = data.map((el) => el.value);
+      });
+  }
+
+  private loadRadarChartDataChartData() {
+    this._dataService
+      .getFeatureImportance()
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((data) => {
+        this.radarChartLabels = data.map((el) => el.label);
+        this.radarChartDatasets[0].data = data.map((el) => el.value);
       });
   }
 }
