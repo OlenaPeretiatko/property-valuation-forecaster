@@ -34,6 +34,24 @@ interface Score {
   park_areas: CategoryDetails;
   transport_interchanges: CategoryDetails;
 }
+import { MatIconModule } from '@angular/material/icon';
+
+interface CategoryDetails {
+  categoryName: string;
+  icon: string;
+  count: number;
+  placesNearby: string[];
+}
+
+interface Score {
+  schools: CategoryDetails;
+  hospitals: CategoryDetails;
+  kindergartens: CategoryDetails;
+  shopping_centers: CategoryDetails;
+  cafes: CategoryDetails;
+  park_areas: CategoryDetails;
+  transport_interchanges: CategoryDetails;
+}
 
 @Component({
   selector: 'prediction-form',
@@ -47,6 +65,7 @@ interface Score {
     MatSelectModule,
     MatCardModule,
     MatButtonModule,
+    MatIconModule,
     MatIconModule,
   ],
   templateUrl: './prediction-form.component.html',
@@ -111,6 +130,52 @@ export class PredictionFormComponent implements OnInit {
     floor: new FormControl<number | null>(null, Validators.required),
     superficiality: new FormControl<number | null>(null, Validators.required),
   });
+
+  score: Score = {
+    schools: {
+      categoryName: 'Schools',
+      icon: 'school', // Material icon for school
+      count: 0,
+      placesNearby: [],
+    },
+    hospitals: {
+      categoryName: 'Hospitals',
+      icon: 'local_hospital', // Material icon for hospitals
+      count: 0,
+      placesNearby: [],
+    },
+    kindergartens: {
+      categoryName: 'Kindergartens',
+      icon: 'child_care', // Material icon for childcare
+      count: 0,
+      placesNearby: [],
+    },
+    shopping_centers: {
+      categoryName: 'Grocery, Shopping Centers',
+      icon: 'shopping_cart', // Material icon for shopping
+      count: 0,
+      placesNearby: [],
+    },
+    cafes: {
+      categoryName: 'Cafes, Restaurants',
+      icon: 'shopping_cart', // Material icon for shopping
+      count: 0,
+      placesNearby: [],
+    },
+    park_areas: {
+      categoryName: 'Park Areas',
+      icon: 'nature_people', // Material icon for parks
+      count: 0,
+      placesNearby: [],
+    },
+    transport_interchanges: {
+      categoryName: 'Transport Interchanges',
+      icon: 'directions_bus', // Material icon for bus stations
+      count: 0,
+      placesNearby: [],
+    },
+  };
+
 
   score: Score = {
     schools: {
