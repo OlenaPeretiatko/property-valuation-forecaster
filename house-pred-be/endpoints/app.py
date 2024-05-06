@@ -3,9 +3,11 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import joblib
 import numpy as np
+import os
 
 app = Flask(__name__)
 CORS(app)
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))  
 
 def get_sold_price():
     data = [
@@ -113,22 +115,23 @@ def feature_importance():
 def predict():
     # Load the trained model
     model = joblib.load(
-        "../model/lviv_price_pred_model.jlb",
+        os.path.join(APP_ROOT, '..', 'model', 'lviv_price_pred_model.jlb'),
     )
 
     data = request.get_json()
     features = extract_features(data)
     if (data["city_code"] == 1):
         model = joblib.load(
-        "../model/lviv_price_pred_model.jlb")
+        os.path.join(APP_ROOT, '..', 'model', 'lviv_price_pred_model.jlb'))
     elif (data["city_code"] == 2):
         model = joblib.load(
-        "../model/kyiv_price_pred_model.jlb",
+        os.path.join(APP_ROOT, '..', 'model', 'kyiv_price_pred_model.jlb'),
     )
     reshaped_features = np.array(features).reshape(1, -1)
     prediction = model.predict(reshaped_features)
 
     response = {"prediction": int(prediction[0])}
+    print(response)
     return jsonify(response)
 
 def load_json_file(file_path):
@@ -150,12 +153,12 @@ def load_json_file(file_path):
 @cross_origin()
 def get_data():
     route_mapping = {
-        "/cities": "../data_matching/cities_matching.json",
-        "/districts": "../data_matching/districts_matching.json",
-        "/furnishing": "../data_matching/furnishing_matching.json",
-        "/property_type": "../data_matching/property_type_matching.json",
-        "/reparation": "../data_matching/reparation_matching.json",
-        "/housing_type": "../data_matching/housing_type_matching.json",
+        "/cities": os.path.join(APP_ROOT, '..', 'data_matching', 'cities_matching.json'),
+        "/districts": os.path.join(APP_ROOT, '..', 'data_matching', 'districts_matching.json'),
+        "/furnishing": os.path.join(APP_ROOT, '..', 'data_matching', 'furnishing_matching.json'),
+        "/property_type": os.path.join(APP_ROOT, '..', 'data_matching', 'property_type_matching.json'),
+        "/reparation": os.path.join(APP_ROOT, '..', 'data_matching', 'reparation_matching.json'),
+        "/housing_type": os.path.join(APP_ROOT, '..', 'data_matching', 'housing_type_matching.json'),
     }
     path = route_mapping.get(request.path)
     if path is None:
