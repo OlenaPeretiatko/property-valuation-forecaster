@@ -195,7 +195,6 @@ export class PredictionFormComponent implements OnInit {
         switchMap((value) => this.searchAddress(value ?? ''))
       )
       .subscribe((data) => {
-        console.log(data);
         this.addresses = data; // Handle the response data here
       });
 
@@ -209,18 +208,10 @@ export class PredictionFormComponent implements OnInit {
   }
 
   onAddressSelected(e: any) {
-    console.log(e);
     const selectedAddress = e.option.value;
-    console.log('Selected Address:', selectedAddress.display_name);
     this.pricePredictionForm.controls.address.setValue(
       selectedAddress.display_name,
       { emitEvent: false }
-    );
-    console.log(
-      'Coordinates: Lat',
-      selectedAddress.lat,
-      'Lon',
-      selectedAddress.lon
     );
     this.onMapClick(selectedAddress.lat, selectedAddress.lon);
   }
@@ -277,7 +268,6 @@ export class PredictionFormComponent implements OnInit {
       )
       .subscribe(
         (response: any) => {
-          console.log(response);
           const elements = response.elements;
 
           this.processPOIs(elements, 'schools', 'amenity', 'school');
@@ -365,16 +355,9 @@ export class PredictionFormComponent implements OnInit {
     fetch(geocodeUrl)
       .then((response) => response.json())
       .then((data) => {
-        console.log('Geocode result:', data);
         const district = data.address.borough.split(' District')[0];
-        console.log('DISTRICT', district);
-        this.districts.map((el) => console.log(el.nameEn));
-        console.log(this.districts.find((el) => el.nameEn === district));
         const districtCode =
           this.districts.find((el) => el.nameEn === district)?.id || null;
-        console.log(districtCode);
-        // console.log(data.address.borough, reverseTransliterate(data.address.borough))
-
         this.pricePredictionForm.controls.district_code.setValue(districtCode);
         this.pricePredictionForm.controls.address.setValue(data.display_name);
       })

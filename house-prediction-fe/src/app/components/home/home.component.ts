@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,13 +22,4 @@ import { AboutComponent } from '../about/about.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
-  address: string = '';
-
-  ngOnInit(): void {}
-
-  predictPrice() {
-    // Logic to handle the price prediction
-    console.log('Predicting price for:', this.address);
-  }
-}
+export class HomeComponent {}

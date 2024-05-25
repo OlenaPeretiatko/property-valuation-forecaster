@@ -30,7 +30,7 @@ import { DataService } from 'src/app/data-service.service';
   styleUrl: './charts.component.scss',
 })
 export class ChartsComponent implements OnInit {
-  selectedCity: number = 1;
+  selectedCity!: number;
   cities?: { id: number; city: string }[];
 
   lineChartLabels: string[] = [];
@@ -87,11 +87,11 @@ export class ChartsComponent implements OnInit {
         .subscribe((cities) => {
           this.cities = cities.map((el) => ({ id: el.id, city: el.name }));
           this.selectedCity = this.cities[0].id;
-          console.log(this.selectedCity);
+          console.log(this.selectedCity)
+
+          this.loadAllCharts();
         });
     }, 0);
-
-    this.loadAllCharts();
   }
 
   loadAllCharts() {
