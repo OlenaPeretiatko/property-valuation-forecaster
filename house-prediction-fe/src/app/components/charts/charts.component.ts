@@ -30,7 +30,7 @@ import { DataService } from 'src/app/data-service.service';
   styleUrl: './charts.component.scss',
 })
 export class ChartsComponent implements OnInit {
-  selectedCity?: { id: number; city: string };
+  selectedCity: number = 1;
   cities?: { id: number; city: string }[];
 
   lineChartLabels: string[] = [];
@@ -86,9 +86,15 @@ export class ChartsComponent implements OnInit {
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((cities) => {
           this.cities = cities.map((el) => ({ id: el.id, city: el.name }));
+          this.selectedCity = this.cities[0].id;
+          console.log(this.selectedCity);
         });
     }, 0);
 
+    this.loadAllCharts();
+  }
+
+  loadAllCharts() {
     this.loadLineChartData();
     this.loadBarChartData();
     this.loadDoughnutChartData();
@@ -97,7 +103,7 @@ export class ChartsComponent implements OnInit {
 
   private loadLineChartData() {
     this._dataService
-      .getSoldPrice()
+      .getSoldPrice(this.selectedCity)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
         this.lineChartLabels = data.map((el) => el.label);
@@ -107,7 +113,7 @@ export class ChartsComponent implements OnInit {
 
   private loadBarChartData() {
     this._dataService
-      .getNeighborhoodPrice()
+      .getNeighborhoodPrice(this.selectedCity)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
         this.barChartLabels = data.map((el) => el.label);
@@ -117,7 +123,7 @@ export class ChartsComponent implements OnInit {
 
   private loadDoughnutChartData() {
     this._dataService
-      .getHouseCountByPriceRange()
+      .getHouseCountByPriceRange(this.selectedCity)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
         this.doughnutChartLabels = data.map((el) => el.label);
@@ -127,7 +133,7 @@ export class ChartsComponent implements OnInit {
 
   private loadRadarChartDataChartData() {
     this._dataService
-      .getFeatureImportance()
+      .getFeatureImportance(this.selectedCity)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((data) => {
         this.radarChartLabels = data.map((el) => el.label);

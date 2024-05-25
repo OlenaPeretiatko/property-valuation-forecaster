@@ -11,7 +11,11 @@
 </div>
 <mat-form-field>
   <mat-label>Select city</mat-label>
-  <mat-select [(ngModel)]="selectedCity" name="city">
+  <mat-select
+    (value)="(selectedCity)"
+    name="city"
+    (valueChange)="loadAllCharts()"
+  >
     @for (city of cities; track city) {
     <mat-option [value]="city.id">{{ city.city }}</mat-option>
     }

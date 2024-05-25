@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { HousePricePredictionData } from './models/models';
 
@@ -7,56 +7,67 @@ import { HousePricePredictionData } from './models/models';
   providedIn: 'root',
 })
 export class DataService {
-  private baseUrl = 'http://127.0.0.1:5000';
+  private baseUrl = 'https://house-pred-be.azurewebsites.net';
 
   constructor(private http: HttpClient) {}
 
   postPricePrediction(data: any): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/predict`,
-      data
-    );
+    return this.http.post<any>(`${this.baseUrl}/predict`, data);
   }
 
-  getSoldPrice(): Observable<{ id: string; label: string; price: number }[]> {
+  getSoldPrice(
+    cityCode: number
+  ): Observable<{ id: string; label: string; price: number }[]> {
+    let params = new HttpParams().set('city_code', cityCode.toString());
+
     return this.http.get<{ id: string; label: string; price: number }[]>(
-      `${this.baseUrl}/sold_price`
+      `${this.baseUrl}/sold_price`,
+      { params }
     );
   }
 
-  getNeighborhoodPrice(): Observable<
+  getNeighborhoodPrice(cityCode: number): Observable<
     {
       id: string;
       label: string;
       price: number;
     }[]
   > {
+    let params = new HttpParams().set('city_code', cityCode.toString());
+
     return this.http.get<{ id: string; label: string; price: number }[]>(
-      `${this.baseUrl}/neighborhood_price`
+      `${this.baseUrl}/neighborhood_price`,
+      { params }
     );
   }
 
-  getHouseCountByPriceRange(): Observable<
+  getHouseCountByPriceRange(cityCode: number): Observable<
     {
       id: string;
       label: string;
       value: number;
     }[]
   > {
+    let params = new HttpParams().set('city_code', cityCode.toString());
+
     return this.http.get<{ id: string; label: string; value: number }[]>(
-      `${this.baseUrl}/house_count_by_price_range`
+      `${this.baseUrl}/house_count_by_price_range`,
+      { params }
     );
   }
 
-  getFeatureImportance(): Observable<
+  getFeatureImportance(cityCode: number): Observable<
     {
       id: string;
       label: string;
       value: number;
     }[]
   > {
+    let params = new HttpParams().set('city_code', cityCode.toString());
+
     return this.http.get<{ id: string; label: string; value: number }[]>(
-      `${this.baseUrl}/feature_importance`
+      `${this.baseUrl}/feature_importance`,
+      { params }
     );
   }
 
@@ -67,12 +78,12 @@ export class DataService {
   }
 
   getDistricts() {
-    return this.http.get<{
-      city: string;
-      districts: { id: number; name: string, nameEn: string }[];
-    }[]>(
-      `${this.baseUrl}/districts`
-    );
+    return this.http.get<
+      {
+        city: string;
+        districts: { id: number; name: string; nameEn: string }[];
+      }[]
+    >(`${this.baseUrl}/districts`);
   }
 
   getFurnishing() {
