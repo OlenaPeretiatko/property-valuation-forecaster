@@ -4,60 +4,92 @@ from flask_cors import CORS, cross_origin
 import joblib
 import numpy as np
 import os
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))  
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def get_sold_price():
-    data = [
-        {"id": 1, "label": "January", "price": 90000},
-        {"id": 2, "label": "February", "price": 91000},
-        {"id": 3, "label": "March", "price": 91200},
-        {"id": 4, "label": "April", "price": 93000},
-        {"id": 5, "label": "May", "price": 91900},
-        {"id": 6, "label": "June", "price": 95000},
-        {"id": 7, "label": "July", "price": 96000},
-        {"id": 8, "label": "August", "price": 94000},
-        {"id": 9, "label": "September", "price": 98000},
-        {"id": 10, "label": "October", "price": 99000},
-        {"id": 11, "label": "November", "price": 100000},
-        {"id": 12, "label": "December", "price": 101000},
-        {"id": 1, "label": "January", "price": 102000}
-    ]
-    return data
 
-def get_neighborhood_price():
-    data = [
-        {"id": 1, "label": "Neighborhood 1", "price": 90000},
-        {"id": 2, "label": "Neighborhood 2", "price": 91000},
-        {"id": 3, "label": "Neighborhood 3", "price": 90200},
-        {"id": 4, "label": "Neighborhood 4", "price": 91400},
-        {"id": 5, "label": "Neighborhood 5", "price": 91000},
-        {"id": 6, "label": "Neighborhood 6", "price": 91500}
-    ]
-    return data
+def get_sold_price(city_code: int):
+    df = get_city_dataset(city_code)
+    df = df[["date_posted", "price"]].copy()
+    df["date_posted"] = pd.to_datetime(df["date_posted"])
+    df_grouped = (
+        df.groupby(df["date_posted"].dt.to_period("M")).price.mean().reset_index()
+    )
 
-def get_house_count_by_price_range():
-    data = [
-        {"id": 1, "label": "< $200k", "value": 20},
-        {"id": 2, "label": "$200k - $300k", "value": 30},
-        {"id": 3, "label": "$300k - $400k", "value": 25},
-        {"id": 4, "label": "$400k - $500k", "value": 15},
-        {"id": 5, "label": "> $500k", "value": 10},
-    ]
-    return data
+    df_grouped["price"] = df_grouped["price"].astype(int)
+    df_grouped["Month"] = df_grouped["date_posted"].dt.strftime("%B, %Y")
+    df_grouped.drop("date_posted", axis=1, inplace=True)
+    df_grouped.columns = ["price", "label"]
 
-def get_feature_importance():
-    data = [
-        {"id": 1, "label": "Location", "value": 80},
-        {"id": 2, "label": "Size", "value": 70},
-        {"id": 3, "label": "Age", "value": 60},
-        {"id": 4, "label": "Amenities", "value": 85},
-        {"id": 5, "label": "Schools", "value": 75},
-        {"id": 6, "label": "Transport", "value": 65},
+    return df_grouped[["label", "price"]].to_dict(orient="records")
+
+
+def get_neighborhood_price(city_code: int):
+    df = get_city_dataset(city_code)
+    df = df[["district", "price"]].copy()
+    df_grouped = df.groupby(df["district"]).price.mean().reset_index()
+
+    df_grouped["price"] = df_grouped["price"].astype(int)
+    df_grouped.columns = ["label", "price"]
+
+    return df_grouped.to_dict(orient="records")
+
+
+def get_house_count_by_price_range(city_code: int):
+    df = get_city_dataset(city_code)
+    df = df[["price"]].copy()
+    bins = [0, 50000, 100000, 150000, 200000, 300000, float("inf")]
+    labels = [
+        "< $50k",
+        "$50k - $100k",
+        "$100k - $150k",
+        "$150k - $200k",
+        "$200k - $300k",
+        "> $300k",
     ]
-    return data
+
+    df["label"] = pd.cut(df["price"], bins=bins, labels=labels, right=False)
+    count_series = df["label"].value_counts().reindex(labels, fill_value=0)
+
+    result_df = count_series.reset_index()
+    result_df.columns = ["label", "value"]
+
+    return result_df.to_dict(orient="records")
+
+
+def get_feature_importance(city_code: int):
+    model = get_city_model(city_code)
+
+    feature_names = [
+        "city_code",
+        "district_code",
+        "furnishing_code",
+        "property_type_code",
+        "housing_type_code",
+        "reparation_code",
+        "total_area",
+        "rooms_number",
+        "kitchen_area",
+        "hospitals_score",
+        "schools_score",
+        "cafes_score",
+        "shopping_centers_score",
+        "transport_interchanges_score",
+        "park_areas_score",
+        "kindergartens_score",
+        "floor",
+        "superficiality",
+    ]
+    importances = model.feature_importances_
+    importance_percentages = (importances * 100).round(2)
+    feature_importance_df = pd.DataFrame(
+        {"label": feature_names, "value": importance_percentages}
+    )
+    return feature_importance_df.to_dict(orient="records")
+
 
 def extract_features(request_data):
     city_code = request_data["city_code"]
@@ -79,60 +111,87 @@ def extract_features(request_data):
     floor = request_data["floor"]
     superficiality = request_data["superficiality"]
 
-    return [city_code, district_code, furnishing_code, property_type_code, housing_type_code, reparation_code,
-            total_area, rooms_number, kitchen_area, hospitals_score, schools_score,
-            cafes_score, shopping_centers_score, transport_interchanges_score,
-            park_areas_score, kindergartens_score, floor, superficiality]
+    return [
+        city_code,
+        district_code,
+        furnishing_code,
+        property_type_code,
+        housing_type_code,
+        reparation_code,
+        total_area,
+        rooms_number,
+        kitchen_area,
+        hospitals_score,
+        schools_score,
+        cafes_score,
+        shopping_centers_score,
+        transport_interchanges_score,
+        park_areas_score,
+        kindergartens_score,
+        floor,
+        superficiality,
+    ]
 
 
 @app.route("/sold_price", methods=["GET"])
 @cross_origin()
 def sold_price():
-    data = get_sold_price()
+    city_code = request.args.get("city_code", default=None, type=int)
+    if not city_code:
+        return jsonify({"error": "No city_code provided"}), 400
+
+    data = get_sold_price(city_code)
     return jsonify(data)
+
 
 @app.route("/neighborhood_price", methods=["GET"])
 @cross_origin()
 def neighborhood_price():
-    data = get_neighborhood_price()
+    city_code = request.args.get("city_code", default=None, type=int)
+    if not city_code:
+        return jsonify({"error": "No city_code provided"}), 400
+
+    data = get_neighborhood_price(city_code)
     return jsonify(data)
+
 
 @app.route("/house_count_by_price_range", methods=["GET"])
 @cross_origin()
 def house_count_by_price_range():
-    data = get_house_count_by_price_range()
+    city_code = request.args.get("city_code", default=None, type=int)
+    if not city_code:
+        return jsonify({"error": "No city_code provided"}), 400
+
+    data = get_house_count_by_price_range(city_code)
     return jsonify(data)
+
 
 @app.route("/feature_importance", methods=["GET"])
 @cross_origin()
 def feature_importance():
-    data = get_feature_importance()
+    city_code = request.args.get("city_code", default=None, type=int)
+    if not city_code:
+        return jsonify({"error": "No city_code provided"}), 400
+
+    data = get_feature_importance(city_code)
     return jsonify(data)
 
 
 @app.route("/predict", methods=["POST"])
 @cross_origin()
 def predict():
-    # Load the trained model
-    model = joblib.load(
-        os.path.join(APP_ROOT, '..', 'model', 'lviv_price_pred_model.jlb'),
-    )
-
     data = request.get_json()
+    # Load the trained model
+    model = get_city_model(data["city_code"])
+
     features = extract_features(data)
-    if (data["city_code"] == 1):
-        model = joblib.load(
-        os.path.join(APP_ROOT, '..', 'model', 'lviv_price_pred_model.jlb'))
-    elif (data["city_code"] == 2):
-        model = joblib.load(
-        os.path.join(APP_ROOT, '..', 'model', 'kyiv_price_pred_model.jlb'),
-    )
     reshaped_features = np.array(features).reshape(1, -1)
     prediction = model.predict(reshaped_features)
 
     response = {"prediction": int(prediction[0])}
     print(response)
     return jsonify(response)
+
 
 def load_json_file(file_path):
     try:
@@ -144,6 +203,17 @@ def load_json_file(file_path):
     except json.JSONDecodeError as err:
         return jsonify({"error": f"Error decoding JSON file: {err}"}), 500
 
+
+def get_city_model(city_code: int):
+    model_name = f"{'lviv' if city_code == 1 else 'kyiv'}_price_pred_model.jlb"
+    return joblib.load(os.path.join(APP_ROOT, "..", "model", model_name))
+
+
+def get_city_dataset(city_code: int) -> pd.DataFrame:
+    dataset_name = f"{'lviv' if city_code == 1 else 'kyiv'}.csv"
+    return pd.read_csv(os.path.join(APP_ROOT, "..", "datasets", dataset_name))
+
+
 @app.route("/cities", methods=["GET"])
 @app.route("/districts", methods=["GET"])
 @app.route("/furnishing", methods=["GET"])
@@ -153,17 +223,30 @@ def load_json_file(file_path):
 @cross_origin()
 def get_data():
     route_mapping = {
-        "/cities": os.path.join(APP_ROOT, '..', 'data_matching', 'cities_matching.json'),
-        "/districts": os.path.join(APP_ROOT, '..', 'data_matching', 'districts_matching.json'),
-        "/furnishing": os.path.join(APP_ROOT, '..', 'data_matching', 'furnishing_matching.json'),
-        "/property_type": os.path.join(APP_ROOT, '..', 'data_matching', 'property_type_matching.json'),
-        "/reparation": os.path.join(APP_ROOT, '..', 'data_matching', 'reparation_matching.json'),
-        "/housing_type": os.path.join(APP_ROOT, '..', 'data_matching', 'housing_type_matching.json'),
+        "/cities": os.path.join(
+            APP_ROOT, "..", "data_matching", "cities_matching.json"
+        ),
+        "/districts": os.path.join(
+            APP_ROOT, "..", "data_matching", "districts_matching.json"
+        ),
+        "/furnishing": os.path.join(
+            APP_ROOT, "..", "data_matching", "furnishing_matching.json"
+        ),
+        "/property_type": os.path.join(
+            APP_ROOT, "..", "data_matching", "property_type_matching.json"
+        ),
+        "/reparation": os.path.join(
+            APP_ROOT, "..", "data_matching", "reparation_matching.json"
+        ),
+        "/housing_type": os.path.join(
+            APP_ROOT, "..", "data_matching", "housing_type_matching.json"
+        ),
     }
     path = route_mapping.get(request.path)
     if path is None:
         return jsonify({"error": "Invalid route"}), 404
     return load_json_file(path)
+
 
 if __name__ == "__main__":
     app.run()
